@@ -61,8 +61,8 @@
             const calque_torche = carteDuNiveau.createStaticLayer("torche", tileset);
             const calque_platformer = carteDuNiveau.createStaticLayer("platformer", tileset);
             const calque_foreground = carteDuNiveau.createStaticLayer("foreground", tileset);
-            calque_platformer.setCollisionByProperty({ estSolide: true }); 
-            
+            calque_platformer.setCollisionByProperty({ estSolide: true });
+
             player = this.physics.add.sprite(0, 128, 'perso');
             player.setBounce(0.2);
             player.setCollideWorldBounds(true);
@@ -87,7 +87,7 @@
             cursors = this.input.keyboard.createCursorKeys();
         }
         function update() {
-            if (gameOver){return;}
+            if (gameOver) { return; }
             if (cursors.left.isDown) { //si la touche gauche est appuyée
                 player.setVelocityX(-160); //alors vitesse négative en X
                 player.anims.play('left', true); //et animation => gauche
@@ -105,7 +105,7 @@
                 player.setVelocityY(-330); //alors vitesse verticale négative
                 //(on saute)
             }
-            
+
         }
         function collectStar(player, star) {
 
