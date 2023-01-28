@@ -21,7 +21,7 @@
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 300 },
-                    debug: false
+                    debug: true
                 }
             },
             scene: { preload: preload, create: create, update: update }
@@ -72,7 +72,12 @@
                 frameRate: 10,
                 repeat: -1
             });
-            cursors = this.input.keyboard.createCursorKeys();
+            this.cursors = this.input.keyboard.addKeys({
+                'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
+                'right': Phaser.Input.Keyboard.KeyCodes.RIGHT,
+                'space': Phaser.Input.Keyboard.KeyCodes.SPACE,
+            });
+
             scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
             //affiche un texte à l’écran, pour le score
             stars = this.physics.add.group({
@@ -92,12 +97,12 @@
             this.physics.add.collider(player, bombs, hitBomb, null, this);
         }
         function update() {
-            if (gameOver){return;}
-            if (cursors.left.isDown) { //si la touche gauche est appuyée
+            if (gameOver) { return; }
+            if (this.cursors.left.isDown) { //si la touche gauche est appuyée
                 player.setVelocityX(-160); //alors vitesse négative en X
                 player.anims.play('left', true); //et animation => gauche
             }
-            else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
+            else if (this.cursors.right.isDown) { //sinon si la touche droite est appuyée
                 player.setVelocityX(160); //alors vitesse positive en X
                 player.anims.play('right', true); //et animation => droite
             }
@@ -105,12 +110,27 @@
                 player.setVelocityX(0); //vitesse nulle
                 player.anims.play('turn'); //animation fait face caméra
             }
-            if (cursors.up.isDown && player.body.touching.down) {
+            if (this.cursors.space.isDown && player.body.blocking.down) {
                 //si touche haut appuyée ET que le perso touche le sol
                 player.setVelocityY(-330); //alors vitesse verticale négative
                 //(on saute)
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         function collectStar(player, star) {
             star.disableBody(true, true); // l’étoile disparaît
             score += 10; //augmente le score de 10

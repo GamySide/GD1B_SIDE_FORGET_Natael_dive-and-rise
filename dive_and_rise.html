@@ -21,7 +21,7 @@
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 300 },
-                    debug: false
+                    debug: true
                 }
             },
             scene: { preload: preload, create: create, update: update }
@@ -45,8 +45,12 @@
         var scoreText;
         var bombs;
         var gameOver = false;
+        var leftWall = false;
+        var rightWall = false;
+        var wallJump = false;
 
         function create() {
+            this.physics.world.setBounds(0,0,1600,1600);
             const carteDuNiveau = this.add.tilemap("carte");
             const tileset = carteDuNiveau.addTilesetImage("tileset(1)", "Phaser_tuilesdejeu");
             const calque_ciel = carteDuNiveau.createStaticLayer("background ciel", tileset);
@@ -65,13 +69,13 @@
 
             calque_platformer.setCollisionByProperty({ estSolide: true });
 
-            player = this.physics.add.sprite(0, 128, 'perso');
+            player = this.physics.add.sprite(0, 64, 'perso');
 
             player.setBounce(0.2);
 
             player.setCollideWorldBounds(true);
 
-            this.physics.add.collider(perso,calque_platformer);
+            this.physics.add.collider(player,calque_platformer);
 
             this.anims.create({
                 key: 'left',
@@ -93,36 +97,70 @@
                 repeat: -1
             });
 
-            cursors = this.input.keyboard.createCursorKeys();
+            this.cursors = this.input.keyboard.addKeys({ 'up': Phaser.Input.Keyboard.KeyCodes.UP,
+            'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
+            'right': Phaser.Input.Keyboard.KeyCodes.RIGHT,
+            'space' : Phaser.Input.Keyboard.KeyCodes.SPACE,
+
+        });
+        this.cameras.main.startFollow(player);
+        this.cameras.main.setBounds(0, 0, 1600, 1600 );
+
+
             
 
         }
         function update() {
             if (gameOver) { return; }
-            if (cursors.left.isDown) { //si la touche gauche est appuyée
-                player.setVelocityX(-160); //alors vitesse négative en X
+            if (this.cursors.left.isDown && wallJump == false) { //si la touche gauche est appuyée
+                player.setVelocityX(-150); //alors vitesse négative en X
                 player.anims.play('left', true); //et animation => gauche
             }
-            else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
-                player.setVelocityX(160); //alors vitesse positive en X
+            else if (this.cursors.right.isDown && wallJump == false) { //sinon si la touche droite est appuyée
+                player.setVelocityX(150); //alors vitesse positive en X
                 player.anims.play('right', true); //et animation => droite
             }
             else { // sinon
                 player.setVelocityX(0); //vitesse nulle
                 player.anims.play('turn'); //animation fait face caméra
             }
-            if (cursors.up.isDown && player.body.touching.down) {
+            if (this.cursors.space.isDown && player.body.onFloor()) {
                 //si touche haut appuyée ET que le perso touche le sol
-                player.setVelocityY(-330); //alors vitesse verticale négative
+                player.setVelocityY(-200); //alors vitesse verticale négative
                 //(on saute)
             }
-
-        }
-        function collectStar(player, star) {
-
-        }
-        function hitBomb(player, bomb) {
-
+            if (this.cursors.space.isDown && player.body.blocked.left && leftWall == false) {
+                //si touche haut appuyée ET que le perso touche le mur
+                leftWall = true;
+                wallJump = true;
+                player.setVelocityY(-200); //alors vitesse verticale négative
+                if(rightWall == true) {
+                    rightWall = false;
+                }
+                //(on saute depuis mur gauche)
+            }
+            else if(this.cursors.space.isDown && player.body.blocked.right && rightWall == false) {
+                //si touche haut appuyée ET que le perso touche le mur
+                rightWall = true;
+                wallJump = true;
+                player.setVelocityY(-200) //alors vitesse verticale négative
+                if(leftWall == true) {
+                    leftWall = false;
+                //(on saute depuis mur droite)
+                }
+            }
+            if(player.body.onFloor()){
+                rightWall = false;
+                leftWall = false;
+                wallJump = false;
+            }
+            if(rightWall == true){
+                player.setVelocityX(-150);
+            }
+            if(leftWall == true){
+                player.setVelocityX(150);
+            }
+            
         }
     </script>
 </body>
