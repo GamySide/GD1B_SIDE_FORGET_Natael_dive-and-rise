@@ -32,7 +32,7 @@
             this.load.image('ground', 'src/assets/platform.png');
             this.load.image('star', 'src/assets/star.png');
             this.load.image('bomb', 'src/assets/bomb.png');*/
-            this.load.spritesheet('perso', 'src/assets/perso.png',
+            this.load.spritesheet('perso', 'src/assets/taylor.png',
                 { frameWidth: 32, frameHeight: 48 });
             this.load.image("Phaser_tuilesdejeu", "src/Tileset_Forget_Natael_JV1B.png")
             this.load.tilemapTiledJSON("carte", "src/JV1B-FORGET-Natael-map.json");
@@ -79,20 +79,21 @@
 
             this.anims.create({
                 key: 'left',
-                frames: this.anims.generateFrameNumbers('perso', { start: 0, end: 3 }),
+                frames: this.anims.generateFrameNumbers('perso', { start: 0, end: 7 }),
                 frameRate: 10,
                 repeat: -1
             });
 
             this.anims.create({
                 key: 'turn',
-                frames: [{ key: 'perso', frame: 4 }],
-                frameRate: 20
+                frames: this.anims.generateFrameNumbers('perso', { start: 8, end: 13 }),
+                frameRate: 20,
+                repeat: -1
             });
 
             this.anims.create({
                 key: 'right',
-                frames: this.anims.generateFrameNumbers('perso', { start: 5, end: 8 }),
+                frames: this.anims.generateFrameNumbers('perso', { start: 13, end: 21 }),
                 frameRate: 10,
                 repeat: -1
             });
